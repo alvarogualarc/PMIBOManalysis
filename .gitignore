@@ -1,0 +1,22 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+data_generator/__pycache__/
+app/backend/__pycache__/
+app/backend/routers/__pycache__/
+*.egg-info/
+.env
+
+# Node
+app/frontend/node_modules/
+app/frontend/dist/
+
+# Snowflake cortex internals
+.cortex/
+
+# macOS
+.DS_Store
+
+# PDF source docs (confidential)
+*.pdf

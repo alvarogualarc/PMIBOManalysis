@@ -1,0 +1,41 @@
+# Snowflake Container Services (SPCS) service specification
+# Deploy with:
+#   snow spcs service create pmi-bom-app \
+#     --spec-path app/spcs_service_spec.yaml \
+#     --compute-pool <your-compute-pool>
+#
+# Replace the image value below with your account's image registry path.
+# Find it with:  SHOW IMAGE REPOSITORIES IN SCHEMA PMI_CLIPP_POC.BOM_ANALYTICS;
+# It will look like: <orgname>-<acctname>.registry.snowflakecomputing.com
+
+spec:
+  containers:
+    - name: pmi-bom-app
+      # Replace <your-snowflake-registry> with the repository_url from SHOW IMAGE REPOSITORIES
+      # e.g. myorg-myacct.registry.snowflakecomputing.com/pmi_clipp_poc/bom_analytics/pmi_bom_poc
+      image: <your-snowflake-registry>/pmi_bom_poc/pmi-bom-app:latest
+
+      # Environment variables injected into the container at runtime.
+      # The FastAPI backend reads these to build its Snowflake connection.
+      env:
+        SNOWFLAKE_WAREHOUSE: BOM_WH
+        SNOWFLAKE_DATABASE: PMI_CLIPP_POC
+        SNOWFLAKE_SCHEMA: BOM_ANALYTICS
+
+      # Resource requests (guaranteed) and limits (maximum burst).
+      # Adjust based on your compute pool node size.
+      resources:
+        requests:
+          memory: 2G
+          cpu: 1
+        limits:
+          memory: 4G
+          cpu: 2
+
+  # Endpoints expose named ports from the container.
+  # 'public: true' makes the endpoint reachable via the SPCS-generated ingress URL.
+  # The nginx server inside the container listens on 8080 (SPCS does not support port 80).
+  endpoints:
+    - name: ui
+      port: 8080
+      public: true
