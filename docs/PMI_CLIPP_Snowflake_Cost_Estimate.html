@@ -155,7 +155,6 @@
   <div class="meta">
     <div>Edition <span>Snowflake Enterprise (AWS)</span></div>
     <div>Region <span>AWS US-East-1</span></div>
-    <div>Credit rate <span>~$3.00 / credit</span></div>
     <div>Date <span>June 2026</span></div>
   </div>
 </div>
@@ -164,7 +163,7 @@
 <p>This estimate covers all Snowflake compute and storage costs for running the CLIPP BOM Analytics platform. Costs are broken down by component across four deployment scenarios. Enterprise edition is required for Row Access Policies and Fine-Grained Access Control (FGAC) replicating ARAS RLS.</p>
 
 <div class="assumption">
-  <strong>Pricing assumptions:</strong> On-demand Enterprise pricing at $3.00/credit on AWS. Annual capacity commitment (pre-purchase) reduces all credit costs by 20–40%. PMI's existing Snowflake contract rate should be substituted for precise figures. All costs in USD.
+  <strong>Pricing assumptions:</strong> Annual capacity commitment (pre-purchase) reduces all credit costs by 20–40%. All costs in USD.
 </div>
 
 <!-- ═══════════════════════════════════════════════════════ -->
@@ -192,7 +191,7 @@
       <td class="right">2</td>
       <td class="right">10</td>
       <td class="right">20</td>
-      <td class="right bold green">~$60</td>
+      <td class="right bold green">~$66</td>
     </tr>
     <tr>
       <td>Development team (business hours)</td>
@@ -200,7 +199,7 @@
       <td class="right">8</td>
       <td class="right">22</td>
       <td class="right">176</td>
-      <td class="right bold">~$530</td>
+      <td class="right bold">~$581</td>
     </tr>
     <tr>
       <td>Production — business hours, 2-node HA</td>
@@ -208,7 +207,7 @@
       <td class="right">12</td>
       <td class="right">22</td>
       <td class="right">528</td>
-      <td class="right bold">~$1,580</td>
+      <td class="right bold">~$1,742</td>
     </tr>
     <tr>
       <td>Production — 24/7, 2-node HA</td>
@@ -216,7 +215,7 @@
       <td class="right">24</td>
       <td class="right">30</td>
       <td class="right">1,440</td>
-      <td class="right bold amber">~$4,320</td>
+      <td class="right bold amber">~$4,752</td>
     </tr>
   </tbody>
 </table>
@@ -254,28 +253,28 @@
       <td class="right">1</td>
       <td class="right">5</td>
       <td class="right">5</td>
-      <td class="right bold green">~$15</td>
+      <td class="right bold green">~$17</td>
     </tr>
     <tr>
       <td>Small <span class="muted">(dev / demo)</span></td>
       <td class="right">2</td>
       <td class="right">8</td>
       <td class="right">16</td>
-      <td class="right bold">~$48</td>
+      <td class="right bold">~$53</td>
     </tr>
     <tr>
       <td>Medium — 1 cluster <span class="muted">(production)</span></td>
       <td class="right">4</td>
       <td class="right">11</td>
       <td class="right">44</td>
-      <td class="right bold">~$132</td>
+      <td class="right bold">~$145</td>
     </tr>
     <tr>
       <td>Medium — 2 clusters <span class="muted">(production, 20 concurrent)</span></td>
       <td class="right">8</td>
       <td class="right">11</td>
       <td class="right">88</td>
-      <td class="right bold amber">~$264</td>
+      <td class="right bold amber">~$290</td>
     </tr>
   </tbody>
 </table>
@@ -313,7 +312,7 @@
       <td class="right">0.33</td>
       <td class="right">22</td>
       <td class="right">7.3</td>
-      <td class="right bold green">~$22</td>
+      <td class="right bold green">~$24</td>
     </tr>
     <tr>
       <td>Full reload <span class="muted">(weekly, all 20K PVs)</span></td>
@@ -322,7 +321,7 @@
       <td class="right">2.0</td>
       <td class="right">4</td>
       <td class="right">8.0</td>
-      <td class="right bold">~$24</td>
+      <td class="right bold">~$26</td>
     </tr>
     <tr>
       <td>Delta (daily) + Full (weekly)</td>
@@ -331,7 +330,7 @@
       <td class="right">—</td>
       <td class="right">26</td>
       <td class="right">15.3</td>
-      <td class="right bold">~$46</td>
+      <td class="right bold">~$51</td>
     </tr>
   </tbody>
 </table>
@@ -366,7 +365,7 @@
       <td>Medium</td>
       <td class="right">~8 sec</td>
       <td class="right">0.009</td>
-      <td class="right bold green">~$0.60</td>
+      <td class="right bold green">~$0.66</td>
     </tr>
     <tr>
       <td>Full history (all revisions)</td>
@@ -374,13 +373,13 @@
       <td>Medium</td>
       <td class="right">~38 sec</td>
       <td class="right">0.042</td>
-      <td class="right bold">~$2.80</td>
+      <td class="right bold">~$3.08</td>
     </tr>
   </tbody>
 </table>
 
 <div class="note">
-  <strong>Key point:</strong> The closure table rebuild is <em>not</em> a significant cost driver. At full production scale (5M rows), the daily rebuild costs less than $3/month. The ETL staging load is the dominant cost in this pipeline at ~$22–46/month.
+  <strong>Key point:</strong> The closure table rebuild is <em>not</em> a significant cost driver. At full production scale (5M rows), the daily rebuild costs less than $4/month. The ETL staging load is the dominant cost in this pipeline at ~$24–51/month.
 </div>
 
 <h3>3c. Total ETL + Rebuild Pipeline</h3>
@@ -397,12 +396,12 @@
     <tr>
       <td>Staging load (daily delta)</td>
       <td class="right">7.3</td>
-      <td class="right">~$22</td>
+      <td class="right">~$24</td>
     </tr>
     <tr>
       <td>Staging load (weekly full reload)</td>
       <td class="right">8.0</td>
-      <td class="right">~$24</td>
+      <td class="right">~$26</td>
     </tr>
     <tr>
       <td>Closure table rebuild (daily, 5M rows)</td>
@@ -417,7 +416,7 @@
     <tr>
       <td class="bold">ETL + Rebuild Total</td>
       <td class="right bold">~17</td>
-      <td class="right bold amber">~$52/month</td>
+      <td class="right bold amber">~$56/month</td>
     </tr>
   </tbody>
 </table>
@@ -520,54 +519,54 @@
   <tbody>
     <tr>
       <td>POC / demo sessions</td>
-      <td class="right">$60</td>
-      <td class="right">$15</td>
-      <td class="right">$10</td>
+      <td class="right">$66</td>
+      <td class="right">$17</td>
+      <td class="right">$11</td>
       <td class="right">&lt;$1</td>
       <td class="right">$5</td>
-      <td class="right bold">~$90</td>
-      <td class="right bold green">~$1,080</td>
+      <td class="right bold">~$99</td>
+      <td class="right bold green">~$1,188</td>
     </tr>
     <tr>
       <td>Internal team (10–20 users, biz hours)</td>
-      <td class="right">$530</td>
-      <td class="right">$48</td>
-      <td class="right">$52</td>
+      <td class="right">$581</td>
+      <td class="right">$53</td>
+      <td class="right">$56</td>
       <td class="right">&lt;$1</td>
       <td class="right">$8</td>
-      <td class="right bold">~$638</td>
-      <td class="right bold">~$7,660</td>
+      <td class="right bold">~$698</td>
+      <td class="right bold">~$8,376</td>
     </tr>
     <tr class="highlight">
       <td>Production — business hours (400 users, 2-node HA)</td>
-      <td class="right">$1,580</td>
-      <td class="right">$264</td>
-      <td class="right">$52</td>
+      <td class="right">$1,742</td>
+      <td class="right">$290</td>
+      <td class="right">$56</td>
       <td class="right">&lt;$1</td>
       <td class="right">$8</td>
-      <td class="right bold">~$1,904</td>
-      <td class="right bold">~$22,850</td>
+      <td class="right bold">~$2,096</td>
+      <td class="right bold">~$25,152</td>
     </tr>
     <tr>
       <td>Production — 24/7 (400 users, global coverage)</td>
-      <td class="right">$4,320</td>
-      <td class="right">$264</td>
-      <td class="right">$52</td>
+      <td class="right">$4,752</td>
+      <td class="right">$290</td>
+      <td class="right">$56</td>
       <td class="right">&lt;$1</td>
       <td class="right">$8</td>
-      <td class="right bold">~$4,644</td>
-      <td class="right bold amber">~$55,730</td>
+      <td class="right bold">~$5,106</td>
+      <td class="right bold amber">~$61,272</td>
     </tr>
     <tr class="grand">
-      <td colspan="6">Recommended production scenario (12-hour global window + overnight scale-down)</td>
-      <td class="right">~$2,800–$3,200</td>
-      <td class="right">~$33,600–$38,400</td>
+      <td colspan="6">Recommended production scenario (18-hour global window + overnight scale-down)</td>
+      <td class="right">~$3,100–$3,500</td>
+      <td class="right">~$37,200–$42,000</td>
     </tr>
   </tbody>
 </table>
 
 <div class="note" style="margin-top:16px">
-  <strong>Recommended production scenario rationale:</strong> PMI operates across 16 time zones. Running SPCS 18 hours/day (06:00–24:00 UTC, covering Japan through West Coast Americas) and scaling down for 6 overnight hours reduces the 24/7 SPCS cost from $4,320 to approximately $2,700/month, while still covering all PMI markets during their business hours. Total annual cost in this scenario: <strong>~$36,000–$38,000/year</strong>.
+  <strong>Recommended production scenario rationale:</strong> PMI operates across 16 time zones. Running SPCS 18 hours/day (06:00–24:00 UTC, covering Japan through West Coast Americas) and scaling down for 6 overnight hours reduces the 24/7 SPCS cost from $4,752 to approximately $2,970/month, while still covering all PMI markets during their business hours. Total annual cost in this scenario: <strong>~$37,200–$42,000/year</strong>.
 </div>
 
 <!-- ═══════════════════════════════════════════════════════ -->
@@ -587,23 +586,23 @@
     <tr>
       <td>Production — business hours</td>
       <td class="right">400</td>
-      <td class="right">~$1,904</td>
-      <td class="right bold">~$4.76</td>
-      <td class="right bold green">~$57</td>
+      <td class="right">~$2,096</td>
+      <td class="right bold">~$5.24</td>
+      <td class="right bold green">~$63</td>
     </tr>
     <tr>
       <td>Production — 24/7</td>
       <td class="right">400</td>
-      <td class="right">~$4,644</td>
-      <td class="right bold">~$11.61</td>
-      <td class="right bold">~$139</td>
+      <td class="right">~$5,106</td>
+      <td class="right bold">~$12.77</td>
+      <td class="right bold">~$153</td>
     </tr>
     <tr>
       <td>Recommended (18-hour window)</td>
       <td class="right">400</td>
-      <td class="right">~$3,000</td>
-      <td class="right bold">~$7.50</td>
-      <td class="right bold green">~$90</td>
+      <td class="right">~$3,300</td>
+      <td class="right bold">~$8.25</td>
+      <td class="right bold green">~$99</td>
     </tr>
   </tbody>
 </table>
@@ -612,17 +611,16 @@
 <h2>8. Assumptions and Notes</h2>
 
 <ul>
-  <li>All prices based on <strong>Snowflake Enterprise edition, AWS US-East-1, on-demand pricing</strong> at approximately $3.00/credit.</li>
-  <li>Annual capacity commitment (pre-purchase) typically reduces credit costs by <strong>20–40%</strong>. For a committed annual deployment, apply the negotiated rate to credit totals above.</li>
+  <li>Annual capacity commitment (pre-purchase) typically reduces credit costs by <strong>20–40%</strong>. For a committed annual deployment, apply the negotiated rate to the credit totals above.</li>
   <li>SPCS STANDARD_1 node = 1 Snowflake credit per node-hour. Node spec: 4 vCPU, 16 GB RAM.</li>
   <li>Warehouse active time estimates assume 60-second auto-suspend. Adjusting to 120-second suspend increases warehouse cost by ~50%; reducing to 30 seconds decreases it by ~25%.</li>
   <li>Storage costs include 90-day Time Travel retention (3× compression factor). Fail-safe storage (7 days) adds a further ~10%.</li>
-  <li>ETL pipeline assumes ARAS provides a daily delta extract file. If ARAS only supports full exports, the weekly full reload figure applies daily, increasing ETL cost to ~$120–150/month.</li>
+  <li>ETL pipeline assumes ARAS provides a daily delta extract file. If ARAS only supports full exports, the weekly full reload figure applies daily, increasing ETL cost to ~$132–165/month.</li>
   <li>These estimates do not include Snowflake platform fees, support tier costs, or professional services for implementation.</li>
 </ul>
 
 <div class="footer">
-  PMI CLIPP BOM Analytics — Snowflake Cost Estimate &nbsp;|&nbsp; Confidential &nbsp;|&nbsp; June 2026 &nbsp;|&nbsp; Based on Snowflake Enterprise Edition, AWS, on-demand pricing
+  PMI CLIPP BOM Analytics — Snowflake Cost Estimate &nbsp;|&nbsp; Confidential &nbsp;|&nbsp; June 2026
 </div>
 
 </body>
