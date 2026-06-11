@@ -1,0 +1,629 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>PMI CLIPP BOM Analytics — Snowflake Cost Estimate</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    font-size: 11pt;
+    color: #1a1a2e;
+    background: #fff;
+    padding: 40px 48px;
+    max-width: 960px;
+    margin: 0 auto;
+  }
+  /* Header */
+  .header {
+    border-bottom: 3px solid #003087;
+    padding-bottom: 18px;
+    margin-bottom: 28px;
+  }
+  .header h1 {
+    font-size: 20pt;
+    color: #003087;
+    font-weight: 700;
+    letter-spacing: -0.3px;
+  }
+  .header .subtitle {
+    font-size: 10pt;
+    color: #64748b;
+    margin-top: 4px;
+  }
+  .header .meta {
+    display: flex;
+    gap: 24px;
+    margin-top: 10px;
+    font-size: 9pt;
+    color: #64748b;
+  }
+  .header .meta span { font-weight: 600; color: #003087; }
+
+  /* Section */
+  h2 {
+    font-size: 13pt;
+    font-weight: 700;
+    color: #003087;
+    margin-top: 32px;
+    margin-bottom: 10px;
+    padding-bottom: 5px;
+    border-bottom: 1px solid #e2e8f0;
+  }
+  h3 {
+    font-size: 11pt;
+    font-weight: 600;
+    color: #1a1a2e;
+    margin-top: 18px;
+    margin-bottom: 8px;
+  }
+  p { line-height: 1.6; color: #334155; margin-bottom: 8px; }
+  ul { margin: 6px 0 10px 18px; }
+  ul li { line-height: 1.7; color: #334155; font-size: 10.5pt; }
+
+  /* Tables */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 12px 0 20px;
+    font-size: 10pt;
+  }
+  thead tr { background: #003087; color: #fff; }
+  thead th {
+    padding: 8px 10px;
+    text-align: left;
+    font-weight: 600;
+    font-size: 9.5pt;
+    letter-spacing: 0.2px;
+  }
+  thead th.right { text-align: right; }
+  tbody tr:nth-child(even) { background: #f8fafc; }
+  tbody tr:hover { background: #eff6ff; }
+  tbody td {
+    padding: 7px 10px;
+    border-bottom: 1px solid #e2e8f0;
+    color: #1e293b;
+  }
+  tbody td.right { text-align: right; font-variant-numeric: tabular-nums; }
+  tbody td.muted { color: #64748b; font-size: 9.5pt; }
+  tbody td.bold { font-weight: 700; }
+  tbody td.green { color: #16a34a; font-weight: 600; }
+  tbody td.amber { color: #d97706; font-weight: 600; }
+
+  /* Summary total table */
+  .total-table thead tr { background: #0f172a; }
+  .total-table tbody tr.highlight { background: #eff6ff; }
+  .total-table tbody tr.highlight td { font-weight: 600; color: #003087; }
+  .total-table tbody tr.grand td {
+    background: #003087;
+    color: #fff;
+    font-weight: 700;
+    border-bottom: none;
+  }
+
+  /* Note box */
+  .note {
+    background: #f0f9ff;
+    border-left: 3px solid #0284c7;
+    padding: 10px 14px;
+    margin: 12px 0;
+    border-radius: 0 4px 4px 0;
+    font-size: 10pt;
+    color: #0c4a6e;
+    line-height: 1.6;
+  }
+  .note strong { color: #003087; }
+
+  .assumption {
+    background: #fff7ed;
+    border-left: 3px solid #f59e0b;
+    padding: 10px 14px;
+    margin: 12px 0;
+    border-radius: 0 4px 4px 0;
+    font-size: 10pt;
+    color: #78350f;
+    line-height: 1.6;
+  }
+
+  /* Footer */
+  .footer {
+    margin-top: 40px;
+    padding-top: 14px;
+    border-top: 1px solid #e2e8f0;
+    font-size: 8.5pt;
+    color: #94a3b8;
+    text-align: center;
+  }
+
+  /* Page break control for printing */
+  @media print {
+    body { padding: 20px 30px; font-size: 10pt; }
+    h2 { page-break-after: avoid; }
+    table { page-break-inside: avoid; }
+    .note, .assumption { page-break-inside: avoid; }
+    .header h1 { font-size: 17pt; }
+  }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="header">
+  <h1>PMI CLIPP BOM Analytics — Snowflake Cost Estimate</h1>
+  <div class="subtitle">Infrastructure and compute cost breakdown for CLIPP Analytics platform on Snowflake</div>
+  <div class="meta">
+    <div>Edition <span>Snowflake Enterprise (AWS)</span></div>
+    <div>Region <span>AWS US-East-1</span></div>
+    <div>Credit rate <span>~$3.00 / credit</span></div>
+    <div>Date <span>June 2026</span></div>
+  </div>
+</div>
+
+<!-- INTRO -->
+<p>This estimate covers all Snowflake compute and storage costs for running the CLIPP BOM Analytics platform. Costs are broken down by component across four deployment scenarios. Enterprise edition is required for Row Access Policies and Fine-Grained Access Control (FGAC) replicating ARAS RLS.</p>
+
+<div class="assumption">
+  <strong>Pricing assumptions:</strong> On-demand Enterprise pricing at $3.00/credit on AWS. Annual capacity commitment (pre-purchase) reduces all credit costs by 20–40%. PMI's existing Snowflake contract rate should be substituted for precise figures. All costs in USD.
+</div>
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<h2>1. SPCS — Application Hosting</h2>
+
+<p>The React + FastAPI application runs as a single Docker container in Snowflake Container Services (SPCS). The container serves the React build via nginx and exposes REST API endpoints via FastAPI. A <strong>STANDARD_1</strong> node (4 vCPU, 16 GB RAM) is sufficient for the full stack at PMI's concurrency target (20 concurrent users).</p>
+
+<p>SPCS charges <strong>1 credit per STANDARD_1 node-hour</strong>. A second node is recommended in production for high availability.</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Scenario</th>
+      <th class="right">Nodes</th>
+      <th class="right">Hrs/day</th>
+      <th class="right">Days/month</th>
+      <th class="right">Credits/month</th>
+      <th class="right">Cost/month</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>POC / demo sessions only</td>
+      <td class="right">1</td>
+      <td class="right">2</td>
+      <td class="right">10</td>
+      <td class="right">20</td>
+      <td class="right bold green">~$60</td>
+    </tr>
+    <tr>
+      <td>Development team (business hours)</td>
+      <td class="right">1</td>
+      <td class="right">8</td>
+      <td class="right">22</td>
+      <td class="right">176</td>
+      <td class="right bold">~$530</td>
+    </tr>
+    <tr>
+      <td>Production — business hours, 2-node HA</td>
+      <td class="right">2</td>
+      <td class="right">12</td>
+      <td class="right">22</td>
+      <td class="right">528</td>
+      <td class="right bold">~$1,580</td>
+    </tr>
+    <tr>
+      <td>Production — 24/7, 2-node HA</td>
+      <td class="right">2</td>
+      <td class="right">24</td>
+      <td class="right">30</td>
+      <td class="right">1,440</td>
+      <td class="right bold amber">~$4,320</td>
+    </tr>
+  </tbody>
+</table>
+
+<div class="note">
+  <strong>PMI context:</strong> The BRD targets 400 users across Japan through Argentina, spanning ~16 time zones. True 24/7 availability is therefore required for full global coverage. A scheduled scale-down of 6–8 hours during lowest-traffic UTC overnight window (e.g. 20:00–04:00 UTC) reduces the 24/7 figure by ~33%.
+</div>
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<h2>2. Virtual Warehouse — Interactive Query Compute</h2>
+
+<p>BOM_WH serves all user-facing queries: BOM explosion, Where Used, BOM comparison, impact analysis, and the 19 BRD business questions. The warehouse auto-suspends after 60 seconds of inactivity. Cost is driven by the number of distinct query bursts, not by concurrent user count.</p>
+
+<p><strong>Typical pattern:</strong> user navigates to a page → 1–3 API calls fire → warehouse resumes → queries complete in &lt;1 second → warehouse suspends 60 seconds later. Effective active time per user interaction: ~65 seconds.</p>
+
+<ul>
+  <li>Estimated 300 user-initiated query bursts per day (20 concurrent users, ~15 bursts per user)</li>
+  <li>Effective active warehouse time: ~30 minutes per business day</li>
+  <li>Monthly active time: ~11 hours (22 business days × 30 min)</li>
+</ul>
+
+<table>
+  <thead>
+    <tr>
+      <th>Warehouse Size</th>
+      <th class="right">Credits/hr</th>
+      <th class="right">Active hrs/month</th>
+      <th class="right">Credits/month</th>
+      <th class="right">Cost/month</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>X-Small <span class="muted">(POC only)</span></td>
+      <td class="right">1</td>
+      <td class="right">5</td>
+      <td class="right">5</td>
+      <td class="right bold green">~$15</td>
+    </tr>
+    <tr>
+      <td>Small <span class="muted">(dev / demo)</span></td>
+      <td class="right">2</td>
+      <td class="right">8</td>
+      <td class="right">16</td>
+      <td class="right bold">~$48</td>
+    </tr>
+    <tr>
+      <td>Medium — 1 cluster <span class="muted">(production)</span></td>
+      <td class="right">4</td>
+      <td class="right">11</td>
+      <td class="right">44</td>
+      <td class="right bold">~$132</td>
+    </tr>
+    <tr>
+      <td>Medium — 2 clusters <span class="muted">(production, 20 concurrent)</span></td>
+      <td class="right">8</td>
+      <td class="right">11</td>
+      <td class="right">88</td>
+      <td class="right bold amber">~$264</td>
+    </tr>
+  </tbody>
+</table>
+
+<div class="note">
+  <strong>Result cache:</strong> Repeated identical queries (same PV, same filters) return from Snowflake's result cache at zero compute cost for up to 24 hours. In practice this reduces effective warehouse time by 15–30% on a daily-refreshed dataset.
+</div>
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<h2>3. ETL — Daily ARAS Data Load</h2>
+
+<p>Each day, a delta extract from ARAS PLM is loaded into Snowflake staging tables. Load volume depends on how many Product Variants and BOM records changed since the previous extract. Two approaches exist: delta load (only changed records) and full reload.</p>
+
+<h3>3a. Staging Load Warehouse</h3>
+
+<p>A dedicated LOAD_WH (separate from BOM_WH) runs the COPY INTO and transformation steps. Running a Small warehouse for the duration of the load ensures the interactive query warehouse is unaffected.</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Load Type</th>
+      <th>Warehouse</th>
+      <th class="right">Duration</th>
+      <th class="right">Credits/load</th>
+      <th class="right">Loads/month</th>
+      <th class="right">Credits/month</th>
+      <th class="right">Cost/month</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Delta load <span class="muted">(~500 changed PVs/day)</span></td>
+      <td>Small</td>
+      <td class="right">~10 min</td>
+      <td class="right">0.33</td>
+      <td class="right">22</td>
+      <td class="right">7.3</td>
+      <td class="right bold green">~$22</td>
+    </tr>
+    <tr>
+      <td>Full reload <span class="muted">(weekly, all 20K PVs)</span></td>
+      <td>Medium</td>
+      <td class="right">~30 min</td>
+      <td class="right">2.0</td>
+      <td class="right">4</td>
+      <td class="right">8.0</td>
+      <td class="right bold">~$24</td>
+    </tr>
+    <tr>
+      <td>Delta (daily) + Full (weekly)</td>
+      <td>Mixed</td>
+      <td class="right">—</td>
+      <td class="right">—</td>
+      <td class="right">26</td>
+      <td class="right">15.3</td>
+      <td class="right bold">~$46</td>
+    </tr>
+  </tbody>
+</table>
+
+<h3>3b. Closure Table Rebuild</h3>
+
+<p>After staging tables are updated, the BOM_CLOSURE table is rebuilt via recursive CTE. This runs on BOM_WH immediately after the delta load completes. The rebuild is the most compute-intensive single operation but is very short at tobacco BOM scale.</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Dataset Scale</th>
+      <th class="right">Closure Rows</th>
+      <th>Warehouse</th>
+      <th class="right">Rebuild Time</th>
+      <th class="right">Credits/rebuild</th>
+      <th class="right">Monthly cost<br/><span style="font-weight:400;font-size:8.5pt">(22 rebuilds)</span></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>POC current</td>
+      <td class="right">111,543</td>
+      <td>X-Small</td>
+      <td class="right">~1.5 sec</td>
+      <td class="right">0.0004</td>
+      <td class="right bold green">&lt;$0.03</td>
+    </tr>
+    <tr>
+      <td>Production active portfolio</td>
+      <td class="right">~1,000,000</td>
+      <td>Medium</td>
+      <td class="right">~8 sec</td>
+      <td class="right">0.009</td>
+      <td class="right bold green">~$0.60</td>
+    </tr>
+    <tr>
+      <td>Full history (all revisions)</td>
+      <td class="right">~5,000,000</td>
+      <td>Medium</td>
+      <td class="right">~38 sec</td>
+      <td class="right">0.042</td>
+      <td class="right bold">~$2.80</td>
+    </tr>
+  </tbody>
+</table>
+
+<div class="note">
+  <strong>Key point:</strong> The closure table rebuild is <em>not</em> a significant cost driver. At full production scale (5M rows), the daily rebuild costs less than $3/month. The ETL staging load is the dominant cost in this pipeline at ~$22–46/month.
+</div>
+
+<h3>3c. Total ETL + Rebuild Pipeline</h3>
+
+<table>
+  <thead>
+    <tr>
+      <th>Component</th>
+      <th class="right">Credits/month</th>
+      <th class="right">Cost/month</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Staging load (daily delta)</td>
+      <td class="right">7.3</td>
+      <td class="right">~$22</td>
+    </tr>
+    <tr>
+      <td>Staging load (weekly full reload)</td>
+      <td class="right">8.0</td>
+      <td class="right">~$24</td>
+    </tr>
+    <tr>
+      <td>Closure table rebuild (daily, 5M rows)</td>
+      <td class="right">0.9</td>
+      <td class="right">~$3</td>
+    </tr>
+    <tr>
+      <td>Dynamic Table overhead (metadata refresh)</td>
+      <td class="right">~1.0</td>
+      <td class="right">~$3</td>
+    </tr>
+    <tr>
+      <td class="bold">ETL + Rebuild Total</td>
+      <td class="right bold">~17</td>
+      <td class="right bold amber">~$52/month</td>
+    </tr>
+  </tbody>
+</table>
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<h2>4. Storage</h2>
+
+<p>Snowflake storage is charged at approximately <strong>$23/TB/month</strong> (on-demand, compressed). BOM analytics data is small relative to typical data warehouse workloads.</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Dataset</th>
+      <th class="right">Compressed Size</th>
+      <th class="right">With Time Travel (90d)</th>
+      <th class="right">Cost/month</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>POC (111K closure rows, all tables)</td>
+      <td class="right">~10 MB</td>
+      <td class="right">~30 MB</td>
+      <td class="right bold green">&lt;$0.01</td>
+    </tr>
+    <tr>
+      <td>Production active (1M closure rows, 20K PVs)</td>
+      <td class="right">~200 MB</td>
+      <td class="right">~600 MB</td>
+      <td class="right bold green">&lt;$0.02</td>
+    </tr>
+    <tr>
+      <td>Full history (5M rows, all revisions, all ECOs)</td>
+      <td class="right">~1 GB</td>
+      <td class="right">~3 GB</td>
+      <td class="right bold green">~$0.07</td>
+    </tr>
+    <tr>
+      <td>PART_ATTRIBUTES + metadata views</td>
+      <td class="right">&lt;1 MB</td>
+      <td class="right">&lt;3 MB</td>
+      <td class="right bold green">&lt;$0.01</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>Storage is negligible at BOM analytics scale. Tobacco product BOMs are not large datasets. Even with 90-day Time Travel enabled for all tables, total storage cost remains under <strong>$1/month</strong>.</p>
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<h2>5. Miscellaneous</h2>
+
+<table>
+  <thead>
+    <tr>
+      <th>Item</th>
+      <th>Notes</th>
+      <th class="right">Cost/month</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Data egress — SPCS to browsers</td>
+      <td class="muted">JSON payloads ~50KB per BOM response; same-region SPCS-to-Snowflake is free</td>
+      <td class="right bold green">~$2</td>
+    </tr>
+    <tr>
+      <td>Snowflake metadata &amp; monitoring queries</td>
+      <td class="muted">INFORMATION_SCHEMA, QUERY_HISTORY, TASK_HISTORY</td>
+      <td class="right bold green">~$1</td>
+    </tr>
+    <tr>
+      <td>SPCS load balancer</td>
+      <td class="muted">Standard AWS ALB pricing passed through</td>
+      <td class="right bold green">~$5</td>
+    </tr>
+    <tr>
+      <td class="bold">Misc Total</td>
+      <td></td>
+      <td class="right bold green">~$8/month</td>
+    </tr>
+  </tbody>
+</table>
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<h2>6. Total Cost Summary</h2>
+
+<table class="total-table">
+  <thead>
+    <tr>
+      <th>Scenario</th>
+      <th class="right">SPCS</th>
+      <th class="right">Warehouse</th>
+      <th class="right">ETL + Rebuild</th>
+      <th class="right">Storage</th>
+      <th class="right">Misc</th>
+      <th class="right">Total/month</th>
+      <th class="right">Total/year</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>POC / demo sessions</td>
+      <td class="right">$60</td>
+      <td class="right">$15</td>
+      <td class="right">$10</td>
+      <td class="right">&lt;$1</td>
+      <td class="right">$5</td>
+      <td class="right bold">~$90</td>
+      <td class="right bold green">~$1,080</td>
+    </tr>
+    <tr>
+      <td>Internal team (10–20 users, biz hours)</td>
+      <td class="right">$530</td>
+      <td class="right">$48</td>
+      <td class="right">$52</td>
+      <td class="right">&lt;$1</td>
+      <td class="right">$8</td>
+      <td class="right bold">~$638</td>
+      <td class="right bold">~$7,660</td>
+    </tr>
+    <tr class="highlight">
+      <td>Production — business hours (400 users, 2-node HA)</td>
+      <td class="right">$1,580</td>
+      <td class="right">$264</td>
+      <td class="right">$52</td>
+      <td class="right">&lt;$1</td>
+      <td class="right">$8</td>
+      <td class="right bold">~$1,904</td>
+      <td class="right bold">~$22,850</td>
+    </tr>
+    <tr>
+      <td>Production — 24/7 (400 users, global coverage)</td>
+      <td class="right">$4,320</td>
+      <td class="right">$264</td>
+      <td class="right">$52</td>
+      <td class="right">&lt;$1</td>
+      <td class="right">$8</td>
+      <td class="right bold">~$4,644</td>
+      <td class="right bold amber">~$55,730</td>
+    </tr>
+    <tr class="grand">
+      <td colspan="6">Recommended production scenario (12-hour global window + overnight scale-down)</td>
+      <td class="right">~$2,800–$3,200</td>
+      <td class="right">~$33,600–$38,400</td>
+    </tr>
+  </tbody>
+</table>
+
+<div class="note" style="margin-top:16px">
+  <strong>Recommended production scenario rationale:</strong> PMI operates across 16 time zones. Running SPCS 18 hours/day (06:00–24:00 UTC, covering Japan through West Coast Americas) and scaling down for 6 overnight hours reduces the 24/7 SPCS cost from $4,320 to approximately $2,700/month, while still covering all PMI markets during their business hours. Total annual cost in this scenario: <strong>~$36,000–$38,000/year</strong>.
+</div>
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<h2>7. Per-User Cost</h2>
+
+<table>
+  <thead>
+    <tr>
+      <th>Scenario</th>
+      <th class="right">Total Users</th>
+      <th class="right">Total/month</th>
+      <th class="right">Cost/user/month</th>
+      <th class="right">Cost/user/year</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Production — business hours</td>
+      <td class="right">400</td>
+      <td class="right">~$1,904</td>
+      <td class="right bold">~$4.76</td>
+      <td class="right bold green">~$57</td>
+    </tr>
+    <tr>
+      <td>Production — 24/7</td>
+      <td class="right">400</td>
+      <td class="right">~$4,644</td>
+      <td class="right bold">~$11.61</td>
+      <td class="right bold">~$139</td>
+    </tr>
+    <tr>
+      <td>Recommended (18-hour window)</td>
+      <td class="right">400</td>
+      <td class="right">~$3,000</td>
+      <td class="right bold">~$7.50</td>
+      <td class="right bold green">~$90</td>
+    </tr>
+  </tbody>
+</table>
+
+<!-- ASSUMPTIONS -->
+<h2>8. Assumptions and Notes</h2>
+
+<ul>
+  <li>All prices based on <strong>Snowflake Enterprise edition, AWS US-East-1, on-demand pricing</strong> at approximately $3.00/credit.</li>
+  <li>Annual capacity commitment (pre-purchase) typically reduces credit costs by <strong>20–40%</strong>. For a committed annual deployment, apply the negotiated rate to credit totals above.</li>
+  <li>SPCS STANDARD_1 node = 1 Snowflake credit per node-hour. Node spec: 4 vCPU, 16 GB RAM.</li>
+  <li>Warehouse active time estimates assume 60-second auto-suspend. Adjusting to 120-second suspend increases warehouse cost by ~50%; reducing to 30 seconds decreases it by ~25%.</li>
+  <li>Storage costs include 90-day Time Travel retention (3× compression factor). Fail-safe storage (7 days) adds a further ~10%.</li>
+  <li>ETL pipeline assumes ARAS provides a daily delta extract file. If ARAS only supports full exports, the weekly full reload figure applies daily, increasing ETL cost to ~$120–150/month.</li>
+  <li>These estimates do not include Snowflake platform fees, support tier costs, or professional services for implementation.</li>
+</ul>
+
+<div class="footer">
+  PMI CLIPP BOM Analytics — Snowflake Cost Estimate &nbsp;|&nbsp; Confidential &nbsp;|&nbsp; June 2026 &nbsp;|&nbsp; Based on Snowflake Enterprise Edition, AWS, on-demand pricing
+</div>
+
+</body>
+</html>
